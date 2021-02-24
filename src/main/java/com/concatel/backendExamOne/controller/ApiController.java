@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.concatel.backendExamOne.ValidateNumberException;
 import com.concatel.backendExamOne.service.IDataService;
 
 @RestController
@@ -25,20 +27,22 @@ public class ApiController {
 	private IDataService dataService;
 	
 	@GetMapping("/{number}")
-	public ResponseEntity<List<String>> inicio(@PathVariable(value="number") int number) throws Throwable {
+	public ResponseEntity<?> init(@PathVariable(value="number") int number) throws Throwable {
+		
+		logger.info("Ha llegado al path /api/v1/"+number);
+		logger.debug("Number"+number);
 		
 		try 
 		{
+			logger.debug("List"+list);
 			list = dataService.complete(number);
-			
-			return new ResponseEntity<List<String>>(list, HttpStatus.OK);
+			logger.debug("List"+list);
+			return new ResponseEntity<>(list, HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
 			logger.error(""+e);
-			e.getMessage();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
 		}
 	}
-  
 }

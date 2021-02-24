@@ -7,69 +7,75 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.concatel.backendExamOne.ValidateNumberException;
+import com.concatel.backendExamOne.enums.FizzBuzz;
+
 @Service
 public class DataServiceImpl implements IDataService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(DataServiceImpl.class);
 	
-	enum words{
-		Fizz,Buzz,FizzBuzz
-	};
 
    @Override
 	public List<String> complete(int max) throws Throwable { 
 		
 		try {
+			logger.info("Inside of complete(int max) on max : "+max);
+			logger.debug("Number: "+max);
 			
 			List <String> fizzOrBuzz = new ArrayList<String>();
 			
 			fizzOrBuzz.add("0");
-
-			if (integerValidator(max))
+			
+			logger.debug("List values: "+fizzOrBuzz);
+			integerValidator(max);
+			
+			for (int cont=1; cont<=max; cont++)
 			{
-				for (int cont=1; cont<=max; cont++)
+				if( cont%15 == 0 )
 				{
-					if( cont%15 == 0 )
-					{
-						fizzOrBuzz.add("FizzBuzz");
-					}
-					else if( cont%5 == 0 )
-					{
-						fizzOrBuzz.add("Buzz");
-					}
-					else if( cont%3 == 0 )
-					{
-						fizzOrBuzz.add("Fizz");
-					}
-					else
-					{
-						fizzOrBuzz.add(Integer.toString(cont));
-					}	
+					fizzOrBuzz.add(FizzBuzz.FizzBuzz.toString());
+					
 				}
+				else if( cont%5 == 0 )
+				{
+					fizzOrBuzz.add(FizzBuzz.Buzz.toString());
+				}
+				else if( cont%3 == 0 )
+				{
+					fizzOrBuzz.add(FizzBuzz.Fizz.toString());
+				}
+				else
+				{
+					fizzOrBuzz.add(Integer.toString(cont));
+				}	
+				
+				logger.debug("List values: "+fizzOrBuzz);
 			}
+			
 			return fizzOrBuzz;
+		}
+		catch(ValidateNumberException e){
+			
+			throw  new ValidateNumberException(e.getMessage());
 		}
 		catch (Exception e)
 		{
+			logger.error("Try failed");
 			e.getMessage();
 			throw new Exception();
 		}
 	}
    
-   private boolean integerValidator (int number) throws Throwable {
-	   
-	   boolean result = false;
+   private void integerValidator (int number) throws Throwable {
 	   	
-	   if (number >= 0)
+	   if (number < 0)
 	   {
-		   result = true;
+		  throw new ValidateNumberException(String.format("The number (%d) is lower than 0.", number));
 	   }
-	   else {
-		   logger.error(number+" is lower than 0.");
-		   throw new Exception();
-	   }
-	   
-	   return result;
+	  
    }
-   }
+ 
+
+}
 
