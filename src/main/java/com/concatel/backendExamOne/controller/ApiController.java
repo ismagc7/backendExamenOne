@@ -7,21 +7,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.concatel.backendExamOne.ValidateNumberException;
 import com.concatel.backendExamOne.service.IDataService;
 
 @RestController
+@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
 @RequestMapping("/api/v1")
 public class ApiController {
 	
-	List <String> list;
 	private static final Logger logger = LoggerFactory.getLogger(ApiController.class);
-	
 	
 	@Autowired
 	private IDataService dataService;
@@ -34,8 +34,7 @@ public class ApiController {
 		
 		try 
 		{
-			logger.debug("List"+list);
-			list = dataService.complete(number);
+			List <String> list = dataService.complete(number);
 			logger.debug("List"+list);
 			return new ResponseEntity<>(list, HttpStatus.OK);
 		}
