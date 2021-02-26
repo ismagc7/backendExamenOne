@@ -1,0 +1,12 @@
+version: '2.0'
+services:
+  web:
+    ports:
+    - "4200:4200"
+    image: ismagc7/myangularapp
+    links:
+    - back
+  back:
+    image: ismagc7/backendexamonejava
+    ports:
+    - "7070:7070"
